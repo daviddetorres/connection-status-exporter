@@ -6,4 +6,4 @@ sockets:
   - name: hostname-https 
     host: 127.0.0.1
     port: 8080
-    protocol: tcp
+    timeout: 2
