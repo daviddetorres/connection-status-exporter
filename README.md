@@ -34,7 +34,7 @@ The metrics are available at http://localhost:8888/metrics. Here is an example:
 # HELP connection_status_up Connection status of the socket.
 # TYPE connection_status_up gauge
 connection_status_up{host="127.0.0.1",name="hostname-http",port="80",protocol="tcp"} 1
-connection_status_up{host="localhost",name="hostname-https",port="8080",protocol="tcp"} 0
+connection_status_up{host="localhost",name="hostname-https",port="8080",protocol="udp"} 0
 ```
 The metrics will have the name *connection_status_up* with the labels for each socket and the following possible values:
 * 1: Connection OK
