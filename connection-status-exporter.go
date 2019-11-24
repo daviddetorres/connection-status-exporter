@@ -43,7 +43,7 @@ const (
 	// Constant values
 	connectionOk          = 1
 	connectionErr         = 0
-	metricsPublishingPort = ":8888"
+	metricsPublishingPort = ":9293"
 )
 
 var (

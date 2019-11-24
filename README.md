@@ -29,7 +29,7 @@ by default the exporter will read the configuration file *config/config.yaml*. A
 ./connection-status-exporter --config-file=config/user_config.yaml
 ```
 
-The metrics are available at http://localhost:8888/metrics. Here is an example: 
+The metrics are available at http://localhost:9293/metrics. Here is an example: 
 ```
 # HELP connection_status_up Connection status of the socket.
 # TYPE connection_status_up gauge
