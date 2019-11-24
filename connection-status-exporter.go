@@ -181,10 +181,35 @@ func (thisSocket *socket) check() error {
 	if thisSocket.Protocol == "" {
 		thisSocket.Protocol = defaultProtocol
 	}
+	// Check if the protocol is among the valid ones
+	if IsValidProtocol(thisSocket.Protocol) == false {
+		return (errors.New("The protocol of the socket is not a valid one"))
+	}
 	if thisSocket.Timeout == 0 {
 		thisSocket.Timeout = defaultTimeout
 	}
 	return (nil)
+}
+
+// IsValidProtocol Check if a string is among the valid protocols
+func IsValidProtocol(protocol string) bool {
+	switch protocol {
+	case
+		"tcp",
+		"tcp4",
+		"tcp6",
+		"udp",
+		"udp4",
+		"udp6",
+		"ip",
+		"ip4",
+		"ip6",
+		"unix",
+		"unixgram",
+		"unixpacket":
+		return true
+	}
+	return false
 }
 
 func main() {
