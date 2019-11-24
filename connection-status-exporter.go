@@ -22,6 +22,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 
@@ -40,14 +41,15 @@ const (
 	defaultProtocol string = "tcp"
 
 	// Constant values
-	connectionOk  = 1
-	connectionErr = 0
+	connectionOk          = 1
+	connectionErr         = 0
+	metricsPublishingPort = ":8888"
 )
 
 var (
 	logger     = log.New(os.Stderr, "", log.Lmicroseconds|log.Ltime|log.Lshortfile)
 	configFile = flag.String("config-file", "config/config.yaml", "Exporter configuration file.")
-	addr       = flag.String("listen-address", ":8888", "The address to listen on for HTTP requests.")
+	addr       = flag.String("listen-address", metricsPublishingPort, "The address to listen on for HTTP requests.")
 )
 
 type socketSet struct {
@@ -57,7 +59,7 @@ type socketSet struct {
 type socket struct {
 	Name     string `yaml:"name"`
 	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
+	Port     int    `yaml:"port"`
 	Protocol string `yaml:"protocol"`
 	Timeout  int    `yalm:"timeout"`
 }
@@ -123,7 +125,7 @@ func (thisSocketSet *socketSet) collect(prometheusGaugeVector *prometheus.GaugeV
 // Checks the status of the connection of a socket and updates it in the Metric
 func (thisSocket *socket) collect(prometheusGaugeVector *prometheus.GaugeVec) {
 	connectionStatus := connectionOk
-	connectionAdress := thisSocket.Host + ":" + thisSocket.Port
+	connectionAdress := thisSocket.Host + ":" + strconv.Itoa(thisSocket.Port)
 	connectionTimeout := time.Duration(thisSocket.Timeout * 1000000000)
 
 	// Create a connection to test the socket
@@ -141,7 +143,7 @@ func (thisSocket *socket) collect(prometheusGaugeVector *prometheus.GaugeVec) {
 	prometheusGaugeVector.WithLabelValues(
 		thisSocket.Name,
 		thisSocket.Host,
-		thisSocket.Port,
+		strconv.Itoa(thisSocket.Port),
 		thisSocket.Protocol).Set(float64(connectionStatus))
 
 	// If the socket was open correctly, close it
@@ -173,7 +175,7 @@ func (thisSocket *socket) check() error {
 	if thisSocket.Name == "" {
 		return (errors.New("All sockets must have the fiels host completed"))
 	}
-	if thisSocket.Port == "" {
+	if thisSocket.Port == 0 {
 		return (errors.New("All sockets must have the field port completed"))
 	}
 	if thisSocket.Protocol == "" {
